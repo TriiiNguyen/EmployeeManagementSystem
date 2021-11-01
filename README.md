@@ -22,7 +22,7 @@ Source schema.sql, seeds.sql then run 'node index.js'
 ## Usage
 
 Link to YouTube video tutorial:
-![alt text](assets/images/screenshot.png)
+https://youtu.be/-SmF-RIVlew
 
 ## Credits
 
