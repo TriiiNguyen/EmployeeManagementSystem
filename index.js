@@ -25,7 +25,7 @@ db.connect((sqlErr) => {
 
 function init() {
 
-  console.log("Welcome to Employee Mgmt System !!!");
+  console.log("Welcome to Employee Management System !!!");
 
   inquirer
     .prompt([
@@ -34,7 +34,7 @@ function init() {
         type: "list",
         name: "options",
         message: "What would you like to do ?",
-        choices: ["View All Employees", "Add Employee", "Add Role", "Update Employee Role", "Add Department", "View All Roles", "View All Departments", "Exit"]
+        choices: ["View All Employees", "View All Roles", "View All Departments", "Add Employee", "Add Role", "Add Department", "Exit"]
       }
 
     ])
@@ -44,7 +44,19 @@ function init() {
       var userInput = answers.options;
       //if elseif condtions 
       if (userInput === "View All Employees") {
-        viewEmployees(); 
+        // viewEmployees(); 
+        const sql = `SELECT * FROM employee`;
+
+        db.query(sql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          }
+          else {
+            //print all database values 
+            console.table(rows);
+            init()
+          }
+        });
       }
       else if (userInput === "View All Roles") {
         //query the databse 
@@ -57,10 +69,89 @@ function init() {
           else {
             //print all database values 
             console.table(rows);
+            init()
           }
         });
       }
-      else {
+      else if (userInput === "View All Departments") {
+        //query the databse 
+        const sql = `SELECT * FROM department`;
+
+        db.query(sql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          }
+          else {
+            //print all database values 
+            console.table(rows);
+            init()
+          }
+        });
+      }
+      else if (userInput === "Add Department") {
+        //query the databse 
+        
+          inquirer.prompt([
+            {
+              type: "input",
+              name: "add_department",
+              message: "Department name: ",
+
+            }
+          ])
+            .then((answers) => {
+              db.query('INSERT INTO department SET name = ?', answers.add_department, function (err, results) {
+                if (err) {
+                  console.log(err)
+                }
+                console.log('Department added!')
+                init()
+              })
+
+            })
+      }
+      else if (userInput === "Add Role"){
+        inquirer.prompt([
+          {
+            type: "input",
+            name: "add_role",
+            message: "Name of role: ",
+
+          }
+        ])
+          .then((answers) => {
+            db.query('INSERT INTO role SET title = ?', answers.add_role, function (err, results) {
+              if (err) {
+                console.log(err)
+              }
+              console.log('Role added!')
+              init()
+            })
+
+          })
+      }
+      else if (userInput === "Add Employee"){
+        inquirer.prompt([
+          {
+            type: "input",
+            name: "add_employee",
+            message: "New employee full name: ",
+
+          }
+        ])
+          .then((answers) => {
+            db.query('INSERT INTO employee SET full_name = ?', answers.add_employee, function (err, results) {
+              if (err) {
+                console.log(err)
+
+              }
+              console.log('Employee name added!')
+              init()
+            })
+
+          })
+      }
+      else { 
         //QUIT 
         console.log("Good bye!! ");
         process.exit();
@@ -72,20 +163,35 @@ function init() {
     });
 }
 
-function viewEmployees(){
-  //query the databse 
-  const sql = `SELECT * FROM employee`;
+// function viewDepartment(){
+//   //query the databse 
+//   const sql = `SELECT * FROM department`;
 
-  db.query(sql, (err, rows) => {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      //print all database values 
-      console.table(rows);
+//   db.query(sql, (err, rows) => {
+//     if (err) {
+//       console.log(err);
+//     }
+//     else {
+//       //print all database values 
+//       console.table(rows);
 
-      //ask the question again 
-      init(); 
-    }
-  });
-}
+//       //ask the question again 
+//       init(); 
+//     }
+//   });
+// }
+
+// function addEmployee() {
+//   const newEmployee = 'INSERT INTO employee SET first_name = ? last_name = ?';
+
+//   db.query(newEmployee, (err, results) => {
+//     if (err) {
+//       console.log(err);
+//     }
+//     else {
+//       console.log('New Employee added!!!')
+//       init();
+//     }
+//   })
+  
+// }
